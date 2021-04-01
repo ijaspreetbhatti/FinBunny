@@ -1,0 +1,45 @@
+<div class="h-100" fxLayout="column">
+    <mat-toolbar class="top-bar" fxLayout="row" fxLayoutGap="10px" color="primary">
+        <a href="/">
+            <img class="toolbar-logo" height="48px" width="48px" src="assets/playboy-icon.svg">
+        </a>
+        <span class="font-24">FinBunny</span>
+        <div fxFlex></div>
+        <div *ngIf="isLoggedIn">
+            Hi, {{formGroup.value.username}}
+            <button class="icon-button-large" [matMenuTriggerFor]='profileMenu' mat-icon-button>
+                <mat-icon>account_circle</mat-icon>
+            </button>
+        </div>
+        <div *ngIf="!isLoggedIn">
+            <form fxLayout="row" fxLayoutGap="10px" [formGroup]="formGroup">
+                <mat-form-field class="font-16">
+                    <mat-label>Username</mat-label>
+                    <input matInput type="email" placeholder="Username" formControlName="username">
+                    <mat-error *ngIf="!formGroup.valid && formGroup.get('username')!.hasError('required')">Required
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field class="font-16">
+                    <mat-label>Password</mat-label>
+                    <input matInput type="password" placeholder="Password" formControlName="password">
+                    <mat-error *ngIf="!formGroup.valid && formGroup.get('password')!.hasError('required')">Required
+                    </mat-error>
+                </mat-form-field>
+                <button type="submit" mat-button *ngIf="!isLoggedIn" (click)="login()">Login</button>
+            </form>
+        </div>
+    </mat-toolbar>
+    <!-- <mat-progress-bar class="app-progress" mode="indeterminate"></mat-progress-bar> -->
+    <app-dashboard fxFlex *ngIf="true"></app-dashboard>
+</div>
+<mat-menu #profileMenu="matMenu">
+    <button mat-menu-item>
+        <span>Redial</span>
+    </button>
+    <button mat-menu-item disabled>
+        <span>Check voice mail</span>
+    </button>
+    <button mat-menu-item (click)="logout()">
+        <span>Logout</span>
+    </button>
+</mat-menu>

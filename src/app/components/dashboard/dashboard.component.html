@@ -1,0 +1,146 @@
+<div class="h-100" fxLayout="column">
+    <div fxFlex=50>
+        <div style="text-align: center; line-height: normal;" fxFlex=50>
+            <div class="font-64">Total Income</div>
+            <div class="font-52">
+                Rs.<span *ngIf='!isLoadingIncomes' [@fade]>{{details.totalIncome}}</span>
+            </div>
+        </div>
+        <div style="text-align: center; line-height: normal;" fxFlex=50>
+            <div class="font-64">Total Expense</div>
+            <div class="font-52">
+                Rs.<span *ngIf='!isLoadingExpenses' [@fade]>{{details.totalExpenses}}</span>
+            </div>
+        </div>
+    </div>
+    <div fxFlex=50>
+        <div class="income-box" fxFlex=50 fxLayout="column" fxLayoutGap="10px">
+            <div style="position: relative;" fxLayout="row" fxLayoutAlign="start center">
+                <span class="font-20">Incomes</span>
+                <div fxFlex></div>
+                <button (click)="isIncomeFormShown=!isIncomeFormShown; incomeFormGroup.reset()" mat-icon-button>
+                    <mat-icon class="animated-icon" [ngClass]="{'rotate-icon' : isIncomeFormShown }">
+                        {{!isIncomeFormShown ? 'add' : 'close'}}</mat-icon>
+                </button>
+                <form class="income-form" fxLayout="row wrap" fxLayoutGap="10px" [formGroup]="incomeFormGroup"
+                    *ngIf="isIncomeFormShown" [@roll]>
+                    <mat-form-field fxFlex class="font-12" appearance="outline">
+                        <mat-label>Name</mat-label>
+                        <input matInput type="text" placeholder="Name" formControlName="name">
+                        <mat-error *ngIf="!incomeFormGroup.valid && incomeFormGroup.get('name')!.hasError('required')">
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field fxFlex class="font-12" appearance="outline">
+                        <mat-label>Type</mat-label>
+                        <mat-select placeholder="Type" formControlName="type">
+                            <mat-option *ngFor="let type of incomeTypes" [value]="type.value">
+                                {{type.viewValue}}
+                            </mat-option>
+                        </mat-select>
+
+                        <mat-error *ngIf="!incomeFormGroup.valid && incomeFormGroup.get('type')!.hasError('required')">
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field fxFlex class="font-12" appearance="outline">
+                        <mat-label>Date</mat-label>
+                        <input matInput type="text" placeholder="Date" (focus)="pickerI.open()"
+                            [matDatepicker]="pickerI" formControlName="date">
+                        <mat-datepicker-toggle matSuffix [for]="pickerI"></mat-datepicker-toggle>
+                        <mat-datepicker #pickerI></mat-datepicker>
+                        <mat-error *ngIf="!incomeFormGroup.valid && incomeFormGroup.get('date')!.hasError('required')">
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field fxFlex class="font-12" appearance="outline">
+                        <mat-label>Amount</mat-label>
+                        <input matInput type="number" placeholder="Amount" formControlName="amount">
+                        <mat-error
+                            *ngIf="!incomeFormGroup.valid && incomeFormGroup.get('amount')!.hasError('required')">
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+                    <button type="Submit" mat-button matTooltip="Add Income" (click)="addIncome()" [@slideIn]>
+                        Add
+                    </button>
+                </form>
+            </div>
+            <div style="position: relative;" fxFlex>
+                <mat-progress-bar style="position: absolute; z-index: 10;" mode="indeterminate"
+                    *ngIf="isLoadingIncomes">
+                </mat-progress-bar>
+                <ag-grid-angular fxFlex class="ag-theme-material" [rowData]="incomeRowData"
+                    [columnDefs]="incomeColumnDefs" [defaultColDef]="defaultColDef" [rowHeight]="40" [headerHeight]="40"
+                    (gridReady)="incomeGridReady($event)">
+                </ag-grid-angular>
+            </div>
+        </div>
+        <div class="expense-box" fxFlex=50 fxLayout="column" fxLayoutGap="10px">
+            <div style="position: relative;" fxLayout="row" fxLayoutAlign="start center">
+                <span class="font-20">Expenses</span>
+                <div fxFlex></div>
+                <button (click)="isExpenseFormShown=!isExpenseFormShown; expenseFormGroup.reset()" mat-icon-button>
+                    <mat-icon class="animated-icon" [ngClass]="{'rotate-icon' : isExpenseFormShown }">
+                        {{!isExpenseFormShown ? 'add' :
+                        'close'}}
+                    </mat-icon>
+                </button>
+                <form class="expense-form" fxLayout="row wrap" fxLayoutGap="10px" [formGroup]="expenseFormGroup"
+                    *ngIf="isExpenseFormShown" [@roll]>
+                    <mat-form-field fxFlex class="font-12" appearance="outline">
+                        <mat-label>Name</mat-label>
+                        <input matInput type="text" placeholder="Name" formControlName="name">
+                        <mat-error
+                            *ngIf="!expenseFormGroup.valid && expenseFormGroup.get('name')!.hasError('required')">
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field fxFlex class="font-12" appearance="outline">
+                        <mat-label>Type</mat-label>
+                        <mat-select placeholder="Type" formControlName="type">
+                            <mat-option *ngFor="let type of expenseTypes" [value]="type.value">
+                                {{type.viewValue}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error
+                            *ngIf="!expenseFormGroup.valid && expenseFormGroup.get('type')!.hasError('required')">
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field fxFlex class="font-12" appearance="outline">
+                        <mat-label>Date</mat-label>
+                        <input matInput type="text" placeholder="Date" (focus)="pickerE.open()"
+                            [matDatepicker]="pickerE" formControlName="date">
+                        <mat-datepicker-toggle matSuffix [for]="pickerE"></mat-datepicker-toggle>
+                        <mat-datepicker #pickerE></mat-datepicker>
+                        <mat-error
+                            *ngIf="!expenseFormGroup.valid && expenseFormGroup.get('date')!.hasError('required')">
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field fxFlex class="font-12" appearance="outline">
+                        <mat-label>Amount</mat-label>
+                        <input matInput type="number" placeholder="Amount" formControlName="amount">
+                        <mat-error
+                            *ngIf="!expenseFormGroup.valid && expenseFormGroup.get('amount')!.hasError('required')">
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+                    <button type="Submit" mat-button matTooltip="Add Expense" (click)="addExpense()">
+                        Add
+                    </button>
+                </form>
+            </div>
+            <div style="position: relative;" fxFlex>
+                <mat-progress-bar style="position: absolute; z-index: 10;" mode="indeterminate"
+                    *ngIf="isLoadingExpenses">
+                </mat-progress-bar>
+                <ag-grid-angular fxFlex class="ag-theme-material" [rowData]="expenseRowData"
+                    [columnDefs]="expenseColumnDefs" [defaultColDef]="defaultColDef" [rowHeight]="40"
+                    [headerHeight]="40" (gridReady)="expenseGridReady($event)">
+                </ag-grid-angular>
+            </div>
+        </div>
+    </div>
+</div>

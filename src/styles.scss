@@ -1,0 +1,46 @@
+@import "~@angular/material/theming";
+@import "../node_modules/ag-grid-community/src/styles/ag-grid.scss";
+@import "../node_modules/ag-grid-community/src/styles/ag-theme-material/sass/ag-theme-material-mixin";
+
+@include mat-core();
+
+$FinBunny-primary: mat-palette($mat-grey, 900);
+$FinBunny-accent: mat-palette($mat-grey, 900);
+$FinBunny-warn: mat-palette($mat-red);
+
+$FinBunny-theme: mat-light-theme(
+  (
+    color: (
+      primary: $FinBunny-primary,
+      accent: $FinBunny-accent,
+      warn: $FinBunny-warn,
+    ),
+  )
+);
+
+@include angular-material-theme($FinBunny-theme);
+
+.ag-theme-material {
+  @include ag-theme-material(
+    (
+      material-primary-color: map-get(map-get($FinBunny-theme, primary), 900),
+      material-accent-color: map-get(map-get($FinBunny-theme, accent), 900),
+    )
+  );
+}
+/* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  height: 100%;
+  line-height: normal;
+}
+div {
+  box-sizing: border-box;
+}
+
+@import "/src/custom-styles.scss";
